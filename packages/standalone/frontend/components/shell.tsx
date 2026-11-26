@@ -1,4 +1,4 @@
-import { Coffee, Activity, BarChart3, BookOpen, Boxes, Cable, ChevronRight, Globe, Handshake, Image, LayoutDashboard, LogOut, MessageSquareWarning, Moon, Network, Palette, PanelsTopLeft, Puzzle, Route, RotateCw, Settings2, ShieldCheck, Sparkles, Sun, Terminal, Monitor, LibraryBig, Wrench, Waves } from 'lucide-react'
+import { Coffee, Activity, BarChart3, BookOpen, Boxes, Cable, ChevronRight, Globe, Handshake, Image, Languages, LayoutDashboard, LogOut, MessageSquareWarning, Moon, Network, Palette, PanelsTopLeft, Puzzle, Route, RotateCw, Settings2, ShieldCheck, Sparkles, Sun, Terminal, Monitor, LibraryBig, Wrench, Waves } from 'lucide-react'
 import { useEffect, useState, useRef } from 'react'
 import type { ComponentType } from 'react'
 import { flushSync } from 'react-dom'
@@ -8,6 +8,7 @@ import { useMotionSetting } from '../motion/hooks'
 import { useMotionField } from '../motion/field'
 import type { Host, Page, PluginPage, Summary } from '../types'
 import { hasDesktopBridge } from '../desktop-update'
+import { getUiLocale, setUiLocale } from '../locale.mjs'
 
 type NavIcon = ComponentType<{ size?: number | string; strokeWidth?: number | string; className?: string }>
 interface NavItem { id: Page; name: string; icon: NavIcon }
@@ -203,7 +204,23 @@ export function Sidebar({ page, summary, host, onDisclaimer, pluginPages = [] }:
     <button type="button" className="sidebar-disclaimer" onClick={onDisclaimer}>使用须知与免责声明</button>
   </>
 }
+export function LanguageToggle() {
+  const [locale, setLocale] = useState(getUiLocale)
+  useEffect(() => {
+    const update = () => setLocale(getUiLocale())
+    window.addEventListener('ofm:locale-change', update)
+    return () => window.removeEventListener('ofm:locale-change', update)
+  }, [])
+  const next = locale === 'en' ? 'zh-CN' : 'en'
+  return <button type="button" className="locale-toggle"
+    title={locale === 'en' ? 'Switch to Chinese' : 'Switch to English'}
+    aria-label={locale === 'en' ? 'Switch to Chinese' : 'Switch to English'}
+    onClick={() => setUiLocale(next)}>
+    <Languages size={15} aria-hidden="true" /><span>{locale === 'en' ? '中文' : 'English'}</span>
+  </button>
+}
+
 export function Topbar({ page, summary, pluginPages = [] }: { page: Page; summary?: Summary; pluginPages?: PluginPage[] }) {
   return <><div className="console-breadcrumb"><span>工作空间</span><ChevronRight size={13} /><strong key={page} className="console-breadcrumb-current">{pageLabel(page, pluginPages)}</strong></div>
-    <div className="console-topbar-status"><span className="status-dot" /><span>{summary?.settings.enabled === false ? '推理已暂停' : '本地服务'}</span><span className="topbar-divider" /><span>LOCAL</span></div></>
+    <div className="console-topbar-status"><span className="status-dot" /><span>{summary?.settings.enabled === false ? '推理已暂停' : '本地服务'}</span><span className="topbar-divider" /><span>LOCAL</span><LanguageToggle /></div></>
 }

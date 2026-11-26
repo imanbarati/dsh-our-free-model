@@ -74,3 +74,36 @@
   overflow-wrap: anywhere;
 }
 
+
+/* English / Chinese UI language switch */
+.locale-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 4px 10px;
+  border: 1px solid var(--line, rgba(128, 140, 160, .3));
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color .16s ease, border-color .16s ease;
+}
+.locale-toggle:hover {
+  background: var(--surface-hover, rgba(128, 140, 160, .1));
+  border-color: currentColor;
+}
+.locale-toggle:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+.locale-login-toggle {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 0 12px;
+}
