@@ -568,6 +568,9 @@ function translateTextNode(node, locale) {
   if (next !== current) {
     TEXT_OUTPUTS.set(node, next);
     node.nodeValue = next;
+  } else if (lastOutput === current) {
+    // Keep the original source so switching back to Chinese restores the node.
+    TEXT_OUTPUTS.set(node, current);
   } else {
     TEXT_OUTPUTS.delete(node);
   }
@@ -587,6 +590,9 @@ function translateAttributes(element, locale) {
     if (next !== current) {
       outputs.set(name, next);
       element.setAttribute(name, next);
+    } else if (outputs.get(name) === current) {
+      // Keep the original attribute source for a later locale switch.
+      outputs.set(name, current);
     } else {
       outputs.delete(name);
     }
