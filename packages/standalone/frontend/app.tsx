@@ -59,6 +59,12 @@ function LazyPage({ name, snapshot, host, active }: { name: 'models' | 'usage' |
   if (!module) return <p role="status">正在加载页面…</p>; const Component = module[name === 'models' ? 'Models' : name === 'usage' ? 'Usage' : 'Settings']; return <Component summary={snapshot.summary} stats={snapshot.stats} host={host} active={active} />
 }
 function App() {
+  const [, refreshLocale] = useState(0)
+  useEffect(() => {
+    const refresh = () => refreshLocale(value => value + 1)
+    window.addEventListener('ofm:locale-change', refresh)
+    return () => window.removeEventListener('ofm:locale-change', refresh)
+  }, [])
   const [mode, setMode] = useState<'loading' | 'login' | 'ready'>('loading'), [snapshot, setSnapshot] = useState<Snapshot>(), [page, setPage] = useState<Page>('overview'), [notice, setNotice] = useState(''), [error, setError] = useState('')
   const [visited, setVisited] = useState<Page[]>([])
   const pluginPages = snapshot?.summary.plugins?.pages ?? NO_PLUGIN_PAGES
